@@ -1,5 +1,5 @@
 ---
-// import { firebase } from '@/firebase/config';
+import { firebase } from '@/firebase/config';
 import MainLayout from '@/layouts/MainLayout.astro';
 import { Image } from 'astro:assets';
 
@@ -9,15 +9,16 @@ if (!isLoggedIn || !user) {
   return Astro.redirect('/login');
 }
 
-const { avatar, email, emailVerified, name } = user;
+const { avatar, email, name } = user;
 
-// const firebaseUser = firebase.auth.currentUser;
+const firebaseUser = firebase.auth.currentUser;
 // console.log('Firebase User:', firebaseUser);
 
 // if (!firebaseUser) {
 //   return Astro.redirect('/login');
 // }
-// await firebaseUser!.reload();
+await firebaseUser!.reload();
+const { emailVerified } = firebaseUser!;
 // const { displayName, email, emailVerified, photoURL } = firebaseUser;
 
 // const name = displayName ?? 'No display name';
