@@ -4,13 +4,13 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import { Image } from 'astro:assets';
 
 const { user, isLoggedIn } = Astro.locals;
-
+console.log('Astro.locals:', Astro.locals);
 if (!isLoggedIn || !user) {
   return Astro.redirect('/login');
 }
 
 const { avatar, email, name } = user;
-
+console.log('User Info:', { avatar, email, name });
 const firebaseUser = firebase.auth.currentUser;
 // console.log('Firebase User:', firebaseUser);
 
@@ -31,7 +31,7 @@ const { emailVerified } = firebaseUser!;
     <div class="card w-96 mx-auto bg-white shadow-xl hover:shadow rounded">
       {
         avatar ? (
-          <Image
+          <img
             class="w-32 mx-auto rounded-full -mt-20 border-8 border-white"
             src={avatar}
             alt={`Avatar de ${name}`}

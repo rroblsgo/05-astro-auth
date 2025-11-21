@@ -25,13 +25,32 @@ export const loginUser = defineAction({
     }
 
     try {
-      const user = await signInWithEmailAndPassword(
+      const result = await signInWithEmailAndPassword(
         firebase.auth,
         email,
         password
       );
 
-      return JSON.stringify(user);
+      // const user = result.user;
+
+      // ⬇️ SAVE PROFILE DATA (avatar included)
+      cookies.set(
+        'user',
+        JSON.stringify({
+          name: result.user.displayName ?? '',
+          email: result.user.email ?? '',
+          avatar: result.user.photoURL ?? '',
+        }),
+        {
+          path: '/',
+          httpOnly: false,
+          secure: true,
+          sameSite: 'lax',
+        }
+      );
+
+      // return JSON.stringify(user);
+      return { ok: true };
     } catch (error) {
       const firebaseError = error as AuthError;
 
