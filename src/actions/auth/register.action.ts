@@ -30,7 +30,7 @@ export const registerUser = defineAction({
 
     // Creación de usuario
     try {
-      const user = await createUserWithEmailAndPassword(
+      const result = await createUserWithEmailAndPassword(
         firebase.auth,
         email,
         password
@@ -41,13 +41,30 @@ export const registerUser = defineAction({
         displayName: name,
       });
 
+      // ⬇️ SAVE PROFILE DATA (avatar included)
+      cookies.set(
+        'user',
+        JSON.stringify({
+          name: result.user.displayName ?? '',
+          email: result.user.email ?? '',
+          avatar: result.user.photoURL ?? '',
+        }),
+        {
+          path: '/',
+          httpOnly: false,
+          secure: true,
+          sameSite: 'lax',
+        }
+      );
+
       // verificar email
       await sendEmailVerification(firebase.auth.currentUser!, {
         // url: 'http://localhost:4321/protected?emailVerified=true',
         url: `${import.meta.env.WEBSITE_URL}/protected?emailVerified=true`,
       });
 
-      return JSON.stringify(user);
+      // return JSON.stringify(user);
+      return { ok: true };
     } catch (error) {
       console.error('Error creating user:', error);
       const firebaseError = error as AuthError;
